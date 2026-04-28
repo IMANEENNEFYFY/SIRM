@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Images DICOM en attente{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>🩻 Images DICOM en attente de réconciliation</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% if orphelins is empty %}
+        <div class="alert alert-info">Aucune image en attente.</div>
+    {% else %}
+        {% for orphelin in orphelins %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body row">
+
+                {# Aperçu de l'image DICOM #}
+                <div class="col-md-3 text-center">
+                    <img src="http://localhost:8042/instances/{{ orphelin.orthancInstanceId }}/preview"
+                         alt="Aperçu DICOM"
+                         class="img-fluid rounded border"
+                         style="max-height: 200px;" />
+                </div>
+
+                {# Métadonnées #}
+                <div class="col-md-4">
+                    <h5>Informations DICOM</h5>
+                    <ul class="list-unstyled">
+                        <li><strong>Patient :</strong> {{ orphelin.patientNomDicom ?? 'Inconnu' }}</li>
+                        <li><strong>ID Patient :</strong> {{ orphelin.patientIdDicom ?? '-' }}</li>
+                        <li><strong>Modalité :</strong> {{ orphelin.modality ?? '-' }}</li>
+                        <li><strong>Reçu le :</strong> {{ orphelin.receivedAt|date('d/m/Y H:i') }}</li>
+                        <li><strong>Statut :</strong> 
+                            <span class="badge bg-warning">{{ orphelin.statut }}</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {# Formulaire de réconciliation #}
+                <div class="col-md-5">
+                    <h5>Lier à un examen</h5>
+                    <form method="POST" 
+                          action="{{ path('app_dicom_do_reconcile', {'id': orphelin.id}) }}">
+                        <div class="mb-3">
+                            <label class="form-label">ID de l'examen Symfony</label>
+                            <input type="number" 
+                                   name="examen_id" 
+                                   class="form-control" 
+                                   placeholder="Ex: 42" 
+                                   required />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            ✅ Réconcilier
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

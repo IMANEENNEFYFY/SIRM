@@ -1,0 +1,210 @@
+<?php //2bccbbb420ece15550d7ff19a8b1e561
+
+return [PHP_INT_MAX, new class() implements \Symfony\Component\Cache\Traits\CachedValueInterface { public function getValue(): mixed { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Query\\ParserResult'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ParserResult')),
+        clone ($p['Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer')),
+        clone ($p['Doctrine\\ORM\\Query\\ResultSetMapping'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ResultSetMapping')),
+    ],
+    null,
+    [
+        'Doctrine\\ORM\\Query\\ParserResult' => [
+            'sqlFinalizer' => [
+                $o[1],
+            ],
+            'resultSetMapping' => [
+                $o[2],
+            ],
+            'parameterMappings' => [
+                [
+                    'statut' => [
+                        0,
+                    ],
+                ],
+            ],
+        ],
+        'Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer' => [
+            'sql' => [
+                1 => 'SELECT e0_.id AS id_0, e0_.date AS date_1, e0_.type AS type_2, e0_.statut AS statut_3, e0_.date_modif_statut AS date_modif_statut_4, e0_.description AS description_5, e0_.compte_rendu AS compte_rendu_6, e0_.date_prevue AS date_prevue_7, e0_.study_instance_uid AS study_instance_uid_8, p1_.id AS id_9, p1_.patient_id AS patient_id_10, p1_.nom AS nom_11, p1_.prenom AS prenom_12, p1_.cin AS cin_13, p1_.date_naissance AS date_naissance_14, p1_.sexe AS sexe_15, p1_.telephone AS telephone_16, p1_.adresse AS adresse_17, p1_.actif AS actif_18, m2_.id AS id_19, m2_.nom AS nom_20, m2_.modalite AS modalite_21, m2_.ae_title AS ae_title_22, m2_.adresse_ip AS adresse_ip_23, m2_.statut AS statut_24, e0_.patient_id AS patient_id_25, e0_.machine_id AS machine_id_26, e0_.medecin_id AS medecin_id_27 FROM examen e0_ LEFT JOIN patient p1_ ON e0_.patient_id = p1_.id LEFT JOIN machine m2_ ON e0_.machine_id = m2_.id WHERE e0_.statut = ? ORDER BY e0_.date DESC',
+            ],
+        ],
+        'stdClass' => [
+            'aliasMap' => [
+                2 => [
+                    'e' => 'App\\Entity\\Examen',
+                    'p' => 'App\\Entity\\Patient',
+                    'm' => 'App\\Entity\\Machine',
+                ],
+            ],
+            'relationMap' => [
+                2 => [
+                    'p' => 'patient',
+                    'm' => 'machine',
+                ],
+            ],
+            'parentAliasMap' => [
+                2 => [
+                    'p' => 'e',
+                    'm' => 'e',
+                ],
+            ],
+            'fieldMappings' => [
+                2 => [
+                    'id_0' => 'id',
+                    'date_1' => 'date',
+                    'type_2' => 'type',
+                    'statut_3' => 'statut',
+                    'date_modif_statut_4' => 'dateModifStatut',
+                    'description_5' => 'description',
+                    'compte_rendu_6' => 'compteRendu',
+                    'date_prevue_7' => 'datePrevue',
+                    'study_instance_uid_8' => 'studyInstanceUid',
+                    'id_9' => 'id',
+                    'patient_id_10' => 'patientId',
+                    'nom_11' => 'nom',
+                    'prenom_12' => 'prenom',
+                    'cin_13' => 'cin',
+                    'date_naissance_14' => 'dateNaissance',
+                    'sexe_15' => 'sexe',
+                    'telephone_16' => 'telephone',
+                    'adresse_17' => 'adresse',
+                    'actif_18' => 'actif',
+                    'id_19' => 'id',
+                    'nom_20' => 'nom',
+                    'modalite_21' => 'modalite',
+                    'ae_title_22' => 'aeTitle',
+                    'adresse_ip_23' => 'adresseIP',
+                    'statut_24' => 'statut',
+                ],
+            ],
+            'columnAliasMappings' => [
+                2 => [
+                    'App\\Entity\\Examen' => [
+                        'e' => [
+                            'id' => 'id_0',
+                            'date' => 'date_1',
+                            'type' => 'type_2',
+                            'statut' => 'statut_3',
+                            'dateModifStatut' => 'date_modif_statut_4',
+                            'description' => 'description_5',
+                            'compteRendu' => 'compte_rendu_6',
+                            'datePrevue' => 'date_prevue_7',
+                            'studyInstanceUid' => 'study_instance_uid_8',
+                        ],
+                    ],
+                    'App\\Entity\\Patient' => [
+                        'p' => [
+                            'id' => 'id_9',
+                            'patientId' => 'patient_id_10',
+                            'nom' => 'nom_11',
+                            'prenom' => 'prenom_12',
+                            'cin' => 'cin_13',
+                            'dateNaissance' => 'date_naissance_14',
+                            'sexe' => 'sexe_15',
+                            'telephone' => 'telephone_16',
+                            'adresse' => 'adresse_17',
+                            'actif' => 'actif_18',
+                        ],
+                    ],
+                    'App\\Entity\\Machine' => [
+                        'm' => [
+                            'id' => 'id_19',
+                            'nom' => 'nom_20',
+                            'modalite' => 'modalite_21',
+                            'aeTitle' => 'ae_title_22',
+                            'adresseIP' => 'adresse_ip_23',
+                            'statut' => 'statut_24',
+                        ],
+                    ],
+                ],
+            ],
+            'enumMappings' => [
+                2 => [
+                    'statut_3' => 'App\\Enum\\StatutExamen',
+                ],
+            ],
+            'typeMappings' => [
+                2 => [
+                    'patient_id_25' => 'integer',
+                    'machine_id_26' => 'integer',
+                    'medecin_id_27' => 'integer',
+                ],
+            ],
+            'entityMappings' => [
+                2 => [
+                    'e' => null,
+                ],
+            ],
+            'metaMappings' => [
+                2 => [
+                    'patient_id_25' => 'patient_id',
+                    'machine_id_26' => 'machine_id',
+                    'medecin_id_27' => 'medecin_id',
+                ],
+            ],
+            'columnOwnerMap' => [
+                2 => [
+                    'id_0' => 'e',
+                    'date_1' => 'e',
+                    'type_2' => 'e',
+                    'statut_3' => 'e',
+                    'date_modif_statut_4' => 'e',
+                    'description_5' => 'e',
+                    'compte_rendu_6' => 'e',
+                    'date_prevue_7' => 'e',
+                    'study_instance_uid_8' => 'e',
+                    'id_9' => 'p',
+                    'patient_id_10' => 'p',
+                    'nom_11' => 'p',
+                    'prenom_12' => 'p',
+                    'cin_13' => 'p',
+                    'date_naissance_14' => 'p',
+                    'sexe_15' => 'p',
+                    'telephone_16' => 'p',
+                    'adresse_17' => 'p',
+                    'actif_18' => 'p',
+                    'id_19' => 'm',
+                    'nom_20' => 'm',
+                    'modalite_21' => 'm',
+                    'ae_title_22' => 'm',
+                    'adresse_ip_23' => 'm',
+                    'statut_24' => 'm',
+                    'patient_id_25' => 'e',
+                    'machine_id_26' => 'e',
+                    'medecin_id_27' => 'e',
+                ],
+            ],
+            'declaringClasses' => [
+                2 => [
+                    'id_0' => 'App\\Entity\\Examen',
+                    'date_1' => 'App\\Entity\\Examen',
+                    'type_2' => 'App\\Entity\\Examen',
+                    'statut_3' => 'App\\Entity\\Examen',
+                    'date_modif_statut_4' => 'App\\Entity\\Examen',
+                    'description_5' => 'App\\Entity\\Examen',
+                    'compte_rendu_6' => 'App\\Entity\\Examen',
+                    'date_prevue_7' => 'App\\Entity\\Examen',
+                    'study_instance_uid_8' => 'App\\Entity\\Examen',
+                    'id_9' => 'App\\Entity\\Patient',
+                    'patient_id_10' => 'App\\Entity\\Patient',
+                    'nom_11' => 'App\\Entity\\Patient',
+                    'prenom_12' => 'App\\Entity\\Patient',
+                    'cin_13' => 'App\\Entity\\Patient',
+                    'date_naissance_14' => 'App\\Entity\\Patient',
+                    'sexe_15' => 'App\\Entity\\Patient',
+                    'telephone_16' => 'App\\Entity\\Patient',
+                    'adresse_17' => 'App\\Entity\\Patient',
+                    'actif_18' => 'App\\Entity\\Patient',
+                    'id_19' => 'App\\Entity\\Machine',
+                    'nom_20' => 'App\\Entity\\Machine',
+                    'modalite_21' => 'App\\Entity\\Machine',
+                    'ae_title_22' => 'App\\Entity\\Machine',
+                    'adresse_ip_23' => 'App\\Entity\\Machine',
+                    'statut_24' => 'App\\Entity\\Machine',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); } }];

@@ -1,0 +1,98 @@
+<section class="resultats-page">
+  <div class="section-heading">
+    <div>
+      <h1>Resultats DICOM</h1>
+      <p>Validation des instances non reconciliees puis consultation des examens recus.</p>
+    </div>
+    <button class="btn btn-primary" (click)="charger()">Actualiser</button>
+  </div>
+
+  <p class="error" *ngIf="erreur">{{ erreur }}</p>
+
+  <article class="card bloc">
+    <div class="bloc-titre">
+      <div>
+        <h2>Resultats non reconcilies</h2>
+        <p>Associer manuellement une instance DICOM a l'examen approprie.</p>
+      </div>
+      <span class="pill pill-warning">{{ nonReconcilies.length }} en attente</span>
+    </div>
+
+    <div class="table-scroll">
+      <div class="table-head orphan-head">
+        <span>Reception</span>
+        <span>Patient DICOM</span>
+        <span>Instance</span>
+        <span>Modalite</span>
+        <span>Examen propose</span>
+        <span>Action</span>
+      </div>
+
+      <div class="table-row orphan-row" *ngFor="let item of nonReconcilies">
+        <span>{{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+        <span class="patient-cell">
+          <strong>{{ item.patientNomDicom || 'Nom inconnu' }}</strong>
+          <small>{{ item.patientIdDicom || 'Patient ID absent' }}</small>
+        </span>
+        <span class="instance-cell">
+          <strong>{{ item.orthancInstanceId }}</strong>
+          <small>{{ item.studyInstanceUid || 'Study UID absent' }}</small>
+        </span>
+        <span>{{ item.modality || '-' }}</span>
+        <span>
+          <select [(ngModel)]="selectedExamens[item.id]" [disabled]="!hasExamensPourItem(item)">
+            <option [ngValue]="null">Choisir un examen</option>
+            <option *ngFor="let candidat of examensPourItem(item)" [ngValue]="candidat.id">
+              {{ candidat.accessionNumber }} - {{ candidat.patient.prenom }} {{ candidat.patient.nom }} - {{ candidat.type }}
+            </option>
+          </select>
+          <small *ngIf="!hasExamensPourItem(item)">Aucun examen disponible pour ce resultat.</small>
+        </span>
+        <span>
+          <button class="btn btn-primary" [disabled]="!selectedExamens[item.id] || validationEnCours[item.id]" (click)="valider(item)">
+            {{ validationEnCours[item.id] ? 'Validation...' : 'Valider' }}
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="nonReconcilies.length === 0">Aucun resultat non reconcilie.</p>
+  </article>
+
+  <article class="card bloc">
+    <div class="bloc-titre">
+      <div>
+        <h2>Examens recus</h2>
+        <p>Une fois le resultat valide, l'examen apparait ici avec acces direct au viewer.</p>
+      </div>
+      <span class="pill pill-success">{{ resultats.length }} recus</span>
+    </div>
+
+    <div class="table-scroll">
+      <div class="table-head">
+        <span>Date</span>
+        <span>Patient</span>
+        <span>Examen</span>
+        <span>Accession</span>
+        <span>Statut</span>
+        <span>Resultat DICOM</span>
+        <span>Action</span>
+      </div>
+
+      <div class="table-row" *ngFor="let item of resultats">
+        <span>{{ item.date | date: 'dd/MM/yyyy' }}</span>
+        <span class="patient-cell">
+          <strong>{{ item.patient.prenom }} {{ item.patient.nom }}</strong>
+          <small>{{ item.patient.patientId }}</small>
+        </span>
+        <span>{{ item.type }}</span>
+        <span>{{ item.accessionNumber }}</span>
+        <span><span class="pill" [ngClass]="getStatutClass(item.statut)">{{ item.statut }}</span></span>
+        <span>{{ item.resultatDicom?.orthancInstanceId || 'Resultat lie' }}</span>
+        <span><button class="btn btn-secondary" (click)="ouvrirViewer(item)">Voir le resultat</button></span>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="resultats.length === 0">Aucun resultat disponible.</p>
+  </article>
+</section>

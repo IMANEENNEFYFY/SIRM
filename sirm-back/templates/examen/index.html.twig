@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des examens{% endblock %}
+
+{% block body %}
+<div class="container py-4" data-controller="examen">
+    <h1 class="mb-4">Gestion des examens</h1>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h2 class="h5 mb-3">Planifier un examen</h2>
+
+            <form data-examen-target="form" data-action="submit->examen#creerExamen">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="patient" class="form-label">Patient</label>
+                        <select id="patient" class="form-select" data-examen-target="patientSelect" required>
+                            <option value="">Sélectionnez un patient</option>
+                            {% for patient in patients %}
+                                <option value="{{ patient.id }}">{{ patient.prenom }} {{ patient.nom }} ({{ patient.patientId }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="type" class="form-label">Type d'examen</label>
+                        <select
+                            id="type"
+                            class="form-select"
+                            data-examen-target="typeSelect"
+                            data-action="change->examen#filtrerMachines"
+                            required
+                        >
+                            <option value="">Sélectionnez un type</option>
+                            {% for type in types %}
+                                <option value="{{ type }}">{{ type }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="machine" class="form-label">Machine</label>
+                        <select id="machine" class="form-select" data-examen-target="machineSelect" required>
+                            <option value="">Sélectionnez une machine</option>
+                            {% for machine in machines %}
+                                <option value="{{ machine.id }}" data-modalite="{{ machine.modalite }}" data-statut="{{ machine.statut }}" {% if machine.statut != 'DISPONIBLE' %}disabled{% endif %}>
+                                    {{ machine.nom }} ({{ machine.modalite }}) - {{ machine.statut }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="date" class="form-label">Date et heure</label>
+                        <input
+                            id="date"
+                            class="form-control"
+                            type="datetime-local"
+                            data-examen-target="dateInput"
+                            value="{{ 'now'|date('Y-m-d\\TH:i') }}"
+                        />
+                    </div>
+
+                    <div class="col-12">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea
+                            id="description"
+                            class="form-control"
+                            rows="3"
+                            data-examen-target="descriptionInput"
+                            placeholder="Description optionnelle"
+                        ></textarea>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit">Créer l'examen</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 m-0">Liste des examens</h2>
+        <div class="btn-group" role="group" aria-label="Pagination">
+            <a
+                class="btn btn-outline-secondary {% if page <= 1 %}disabled{% endif %}"
+                href="{% if page > 1 %}{{ path('examen_page', { page: page - 1 }) }}{% else %}#{% endif %}"
+            >Précédent</a>
+            <a class="btn btn-outline-secondary" href="{{ path('examen_page', { page: page + 1 }) }}">Suivant</a>
+        </div>
+    </div>
+
+    <div data-examen-target="errorBox"></div>
+
+    <div data-examen-target="examensList">
+        {% if examens is empty %}
+            <p class="text-center text-muted">Aucun examen en base de données</p>
+        {% else %}
+            {% for e in examens %}
+                {% set badgeClass = 'bg-secondary' %}
+                {% if e.statut.value == 'PLANIFIE' %}
+                    {% set badgeClass = 'bg-info' %}
+                {% elseif e.statut.value == 'EN_COURS' %}
+                    {% set badgeClass = 'bg-warning' %}
+                {% elseif e.statut.value == 'RECU' %}
+                    {% set badgeClass = 'bg-success' %}
+                {% elseif e.statut.value == 'ANNULE' %}
+                    {% set badgeClass = 'bg-danger' %}
+                {% endif %}
+                <div class="card mb-3 examen-card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="card-title">Patient: {{ e.patient.prenom }} {{ e.patient.nom }}</h5>
+                                <p class="mb-1"><strong>Type:</strong> {{ e.type }}</p>
+                                <p class="mb-1"><strong>Date:</strong> {{ e.date|date('d/m/Y H:i') }}</p>
+                                <p class="mb-1">
+                                    <strong>Machine:</strong> {{ e.machine.nom }} ({{ e.machine.modalite }})
+                                    {% set machineColor = 'secondary' %}
+                                    {% if e.machine.statut == 'DISPONIBLE' %}
+                                        {% set machineColor = 'success' %}
+                                    {% elseif e.machine.statut == 'EN_COURS' %}
+                                        {% set machineColor = 'warning' %}
+                                    {% elseif e.machine.statut == 'FAIT' %}
+                                        {% set machineColor = 'danger' %}
+                                    {% endif %}
+                                    <span class="badge bg-{{ machineColor }} ms-2">{{ e.machine.statut }}</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="badge status-badge {{ badgeClass }}">{{ e.statut.value }}</span>
+                                        {% if e.description %}
+                                            <p class="mt-2 small text-muted">{{ e.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <button
+                                            class="btn btn-sm btn-outline-primary"
+                                            onclick="window.examenController && window.examenController.changerStatut({{ e.id }}, 'EN_COURS')"
+                                            {% if e.statut.value != 'PLANIFIE' %}disabled{% endif %}
+                                        >Commencer</button>
+                                        {% if e.statut.value == 'EN_COURS' %}
+                                            <button
+                                                class="btn btn-sm btn-outline-success"
+                                                onclick="window.examenController && window.examenController.changerStatut({{ e.id }}, 'RECU')"
+                                            >Reçu</button>
+                                        {% endif %}
+                                        {% if e.statut.value != 'RECU' and e.statut.value != 'ANNULE' %}
+                                            <button
+                                                class="btn btn-sm btn-outline-danger"
+                                                onclick="window.examenController && window.examenController.annulerExamen({{ e.id }})"
+                                            >Annuler</button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

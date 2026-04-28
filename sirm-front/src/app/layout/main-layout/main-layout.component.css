@@ -1,0 +1,38 @@
+.app-shell {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  grid-template-rows: var(--header-height) 1fr;
+  background: transparent;
+}
+
+.shell-body {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 0;
+  padding: 14px;
+  gap: 14px;
+}
+
+.shell-content {
+  min-height: 0;
+  overflow: auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+}
+
+@media (max-width: 900px) {
+  .shell-body {
+    grid-template-columns: 76px 1fr;
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .shell-content {
+    padding: 14px;
+  }
+}

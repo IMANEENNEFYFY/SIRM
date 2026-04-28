@@ -1,0 +1,191 @@
+<section class="examens-page">
+  <div class="section-heading">
+    <div>
+      <h1>Pilotage des examens</h1>
+      <p>Creation, affectation machine, envoi worklist et suivi du statut.</p>
+    </div>
+    <button class="btn btn-primary" (click)="charger()">Actualiser</button>
+  </div>
+
+  <p class="erreur" *ngIf="erreur">{{ erreur }}</p>
+
+  <div class="top-grid">
+    <article class="card form-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Nouvel examen</h2>
+          <p>Planifier un examen et l'affecter a une machine disponible.</p>
+        </div>
+        <span class="pill pill-neutral">Creation</span>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          <span>Patient</span>
+          <select [(ngModel)]="creation.patientId">
+            <option *ngFor="let patient of patients" [ngValue]="patient.id">
+              {{ patient.prenom }} {{ patient.nom }}
+            </option>
+          </select>
+        </label>
+
+        <label>
+          <span>Machine</span>
+          <select [(ngModel)]="creation.machineId">
+            <option *ngFor="let machine of machines" [ngValue]="machine.id" [disabled]="!isMachineDisponible(machine)">
+              {{ machine.nom }} - {{ machine.modalite }} - {{ getMachineStatusLabel(machine.statut) }}
+            </option>
+          </select>
+        </label>
+
+        <div class="availability-card" *ngIf="machineSelectionnee">
+          <span>Disponibilite machine</span>
+          <strong [class.unavailable]="!machineSelectionnee.isDisponible">
+            {{ machineSelectionnee.isDisponible ? 'Disponible' : 'Non disponible' }}
+          </strong>
+          <small>Statut actuel : {{ getMachineStatusLabel(machineSelectionnee.statut) }}</small>
+        </div>
+
+        <label>
+          <span>Type d'examen</span>
+          <input [(ngModel)]="creation.type" placeholder="Ex: CT_THORAX" />
+        </label>
+
+        <label>
+          <span>Date prevue</span>
+          <input [(ngModel)]="creation.date" type="datetime-local" />
+        </label>
+
+        <label class="full">
+          <span>Description clinique</span>
+          <input [(ngModel)]="creation.description" placeholder="Contexte, indication ou demande clinique" />
+        </label>
+      </div>
+
+      <button class="btn btn-primary" (click)="creerExamen()">Creer l'examen</button>
+    </article>
+
+    <article class="card info-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Repere rapide</h2>
+          <p>Lecture immediate des statuts et de la disponibilite machine.</p>
+        </div>
+        <span class="pill pill-info">{{ examens.length }} examens</span>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="pill pill-neutral">Planifie</span><small>Examen cree, en attente</small></div>
+        <div class="legend-item"><span class="pill pill-warning">En cours</span><small>Worklist envoyee ou acquisition active</small></div>
+        <div class="legend-item"><span class="pill pill-success">Recu</span><small>Images rapprochees dans Orthanc</small></div>
+        <div class="legend-item"><span class="pill pill-danger">Annule</span><small>Examen stoppe ou invalide</small></div>
+      </div>
+    </article>
+  </div>
+
+  <article class="card form-card edit-card" *ngIf="examenEnEdition">
+    <div class="bloc-titre">
+      <div>
+        <h2>Modifier {{ examenEnEdition.accessionNumber }}</h2>
+        <p>Ajuster le patient, la machine ou les informations planifiees.</p>
+      </div>
+      <span class="pill pill-warning">Edition</span>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        <span>Patient</span>
+        <select [(ngModel)]="edition.patientId">
+          <option *ngFor="let patient of patients" [ngValue]="patient.id">
+            {{ patient.prenom }} {{ patient.nom }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Machine</span>
+        <select [(ngModel)]="edition.machineId">
+          <option *ngFor="let machine of machines" [ngValue]="machine.id">
+            {{ machine.nom }} - {{ machine.modalite }}
+          </option>
+        </select>
+      </label>
+
+      <label>
+        <span>Type d'examen</span>
+        <input [(ngModel)]="edition.type" placeholder="Type d'examen" />
+      </label>
+
+      <label>
+        <span>Date</span>
+        <input [(ngModel)]="edition.date" type="datetime-local" />
+      </label>
+
+      <label class="full">
+        <span>Description clinique</span>
+        <input [(ngModel)]="edition.description" placeholder="Description clinique" />
+      </label>
+    </div>
+
+    <div class="actions-edit">
+      <button class="btn btn-primary" (click)="sauvegarderEdition()">Sauvegarder</button>
+      <button class="btn btn-secondary" (click)="annulerEdition()">Annuler</button>
+    </div>
+  </article>
+
+  <article class="card liste-card">
+    <div class="bloc-titre">
+      <div>
+        <h2>Liste des examens</h2>
+        <p>Vue operationnelle pour piloter chaque dossier d'imagerie.</p>
+      </div>
+      <span class="pill pill-neutral">Table principale</span>
+    </div>
+
+    <div class="table-scroll">
+      <div class="table-head">
+        <span>Accession</span>
+        <span>Patient</span>
+        <span>Type</span>
+        <span>Machine</span>
+        <span>Statut machine</span>
+        <span>Statut examen</span>
+        <span>Actions</span>
+      </div>
+
+      <div class="table-row" *ngFor="let examen of examens">
+        <span class="accession-cell">
+          <strong>{{ examen.accessionNumber }}</strong>
+          <small>{{ examen.machine.modalite }}</small>
+        </span>
+
+        <span class="patient-cell">
+          <strong>{{ examen.patient.prenom }} {{ examen.patient.nom }}</strong>
+          <small>{{ examen.patient.patientId }}</small>
+        </span>
+
+        <span>{{ examen.type }}</span>
+        <span>{{ examen.machine.nom }}</span>
+
+        <span>
+          <span class="pill" [ngClass]="getStatutMachineBadgeClass(examen.machine.statut)">
+            {{ getMachineStatusLabel(examen.machine.statut) }}
+          </span>
+        </span>
+
+        <span>
+          <span class="pill" [ngClass]="getExamenStatusClass(examen.statut)">
+            {{ getExamenStatusLabel(examen.statut) }}
+          </span>
+        </span>
+
+        <span class="actions">
+          <button class="btn btn-secondary" *ngIf="peutModifier(examen)" (click)="activerEdition(examen)">Modifier</button>
+          <button class="btn btn-secondary" *ngIf="peutCommencer(examen)" (click)="envoyerWorklist(examen)">Commencer</button>
+          <button class="btn btn-secondary" *ngIf="peutVoirViewer(examen)" (click)="ouvrirViewer(examen)">Viewer</button>
+          <button class="btn btn-secondary" *ngIf="peutRecreer(examen)" (click)="recreerExamen(examen)">Recreer l'examen</button>
+        </span>
+      </div>
+    </div>
+  </article>
+</section>

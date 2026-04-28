@@ -1,0 +1,17 @@
+<section class="card viewer-page">
+  <div class="viewer-head">
+    <h2>Viewer DICOM Cornerstone</h2>
+    <div class="meta" *ngIf="sourceDicom">
+      <span>Examen #{{ sourceDicom.examenId }}</span>
+      <span>Instance Orthanc: {{ sourceDicom.orthancInstanceId }}</span>
+    </div>
+  </div>
+
+  <p class="error" *ngIf="erreur">{{ erreur }}</p>
+  <p class="loading" *ngIf="chargement">Chargement de l'image DICOM...</p>
+
+  <div class="viewport-wrapper">
+    <div #dicomViewport class="dicom-viewport"></div>
+  </div>
+</section>
+

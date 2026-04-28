@@ -1,0 +1,80 @@
+.resultats-page {
+  display: grid;
+  gap: 18px;
+}
+
+.bloc {
+  display: grid;
+  gap: 14px;
+}
+
+.bloc-titre {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bloc-titre p {
+  margin-top: 6px;
+  color: var(--text-muted);
+}
+
+.table-scroll {
+  min-width: 0;
+  overflow: auto;
+}
+
+.table-head,
+.table-row {
+  display: grid;
+  grid-template-columns: 0.9fr 1.2fr 0.9fr 0.9fr 0.8fr 1fr 0.8fr;
+  gap: 12px;
+  align-items: center;
+  min-width: 1120px;
+  padding: 14px 16px;
+  border-radius: 8px;
+}
+
+.orphan-head,
+.orphan-row {
+  grid-template-columns: 0.9fr 1.2fr 1.1fr 0.7fr 1.4fr 0.8fr;
+  min-width: 1160px;
+}
+
+.table-head {
+  background: #edf4f8;
+  color: #48606f;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.table-row {
+  margin-top: 6px;
+  background: rgba(248, 251, 253, 0.82);
+  border: 1px solid #eef3f6;
+}
+
+.patient-cell,
+.instance-cell {
+  display: grid;
+  gap: 4px;
+}
+
+.patient-cell small,
+.instance-cell small {
+  color: var(--text-muted);
+}
+
+.error {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #f1c7c7;
+  background: #fff3f3;
+  color: #a93e3e;
+}
+
+.empty {
+  color: var(--text-muted);
+}

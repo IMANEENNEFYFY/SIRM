@@ -1,0 +1,13 @@
+{
+  "Name": "SIRM Orthanc",
+  "HttpServerEnabled": true,
+  "HttpPort": 8042,
+  "AuthenticationEnabled": false,
+  "RemoteAccessAllowed": true,
+  "LuaScripts": [
+    "c:/path/to/orthanc_sirm_plugin.lua"
+  ],
+  "Plugins": [
+    "c:/path/to/OrthancWorklists.dll"
+  ]
+}

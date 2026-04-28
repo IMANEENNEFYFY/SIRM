@@ -1,0 +1,22 @@
+<section class="login-page">
+  <form class="login-card card" (ngSubmit)="seConnecter()">
+    <h1>Connexion SIRM</h1>
+    <p>Authentifiez-vous pour accéder au système de radiologie.</p>
+
+    <label>
+      Login
+      <input [(ngModel)]="login" name="login" required />
+    </label>
+
+    <label>
+      Mot de passe
+      <input [(ngModel)]="motDePasse" name="motDePasse" type="password" required />
+    </label>
+
+    <p class="erreur" *ngIf="erreur">{{ erreur }}</p>
+
+    <button class="btn btn-primary" type="submit" [disabled]="chargement">
+      {{ chargement ? 'Connexion...' : 'Se connecter' }}
+    </button>
+  </form>
+</section>

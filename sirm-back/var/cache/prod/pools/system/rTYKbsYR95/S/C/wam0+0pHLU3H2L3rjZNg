@@ -1,0 +1,105 @@
+<?php //2aa47354c94d2437c00111883166afef
+
+return [PHP_INT_MAX, new class() implements \Symfony\Component\Cache\Traits\CachedValueInterface { public function getValue(): mixed { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (($p = &\Symfony\Component\VarExporter\Internal\Registry::$prototypes)['Doctrine\\ORM\\Query\\ParserResult'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ParserResult')),
+        clone ($p['Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer')),
+        clone ($p['Doctrine\\ORM\\Query\\ResultSetMapping'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Doctrine\\ORM\\Query\\ResultSetMapping')),
+    ],
+    null,
+    [
+        'Doctrine\\ORM\\Query\\ParserResult' => [
+            'sqlFinalizer' => [
+                $o[1],
+            ],
+            'resultSetMapping' => [
+                $o[2],
+            ],
+            'parameterMappings' => [
+                [
+                    'examenId' => [
+                        0,
+                    ],
+                ],
+            ],
+        ],
+        'Doctrine\\ORM\\Query\\Exec\\SingleSelectSqlFinalizer' => [
+            'sql' => [
+                1 => 'SELECT r0_.id AS id_0, r0_.orthanc_instance_id AS orthanc_instance_id_1, r0_.study_instance_uid AS study_instance_uid_2, r0_.series_instance_uid AS series_instance_uid_3, r0_.modality AS modality_4, r0_.received_at AS received_at_5, r0_.orthanc_url AS orthanc_url_6, r0_.examen_id AS examen_id_7 FROM resultat_dicom r0_ WHERE r0_.examen_id = ? ORDER BY r0_.received_at DESC',
+            ],
+        ],
+        'stdClass' => [
+            'aliasMap' => [
+                2 => [
+                    'r' => 'App\\Entity\\ResultatDicom',
+                ],
+            ],
+            'fieldMappings' => [
+                2 => [
+                    'id_0' => 'id',
+                    'orthanc_instance_id_1' => 'orthancInstanceId',
+                    'study_instance_uid_2' => 'studyInstanceUid',
+                    'series_instance_uid_3' => 'seriesInstanceUid',
+                    'modality_4' => 'modality',
+                    'received_at_5' => 'receivedAt',
+                    'orthanc_url_6' => 'orthancUrl',
+                ],
+            ],
+            'columnAliasMappings' => [
+                2 => [
+                    'App\\Entity\\ResultatDicom' => [
+                        'r' => [
+                            'id' => 'id_0',
+                            'orthancInstanceId' => 'orthanc_instance_id_1',
+                            'studyInstanceUid' => 'study_instance_uid_2',
+                            'seriesInstanceUid' => 'series_instance_uid_3',
+                            'modality' => 'modality_4',
+                            'receivedAt' => 'received_at_5',
+                            'orthancUrl' => 'orthanc_url_6',
+                        ],
+                    ],
+                ],
+            ],
+            'typeMappings' => [
+                2 => [
+                    'examen_id_7' => 'integer',
+                ],
+            ],
+            'entityMappings' => [
+                2 => [
+                    'r' => null,
+                ],
+            ],
+            'metaMappings' => [
+                2 => [
+                    'examen_id_7' => 'examen_id',
+                ],
+            ],
+            'columnOwnerMap' => [
+                2 => [
+                    'id_0' => 'r',
+                    'orthanc_instance_id_1' => 'r',
+                    'study_instance_uid_2' => 'r',
+                    'series_instance_uid_3' => 'r',
+                    'modality_4' => 'r',
+                    'received_at_5' => 'r',
+                    'orthanc_url_6' => 'r',
+                    'examen_id_7' => 'r',
+                ],
+            ],
+            'declaringClasses' => [
+                2 => [
+                    'id_0' => 'App\\Entity\\ResultatDicom',
+                    'orthanc_instance_id_1' => 'App\\Entity\\ResultatDicom',
+                    'study_instance_uid_2' => 'App\\Entity\\ResultatDicom',
+                    'series_instance_uid_3' => 'App\\Entity\\ResultatDicom',
+                    'modality_4' => 'App\\Entity\\ResultatDicom',
+                    'received_at_5' => 'App\\Entity\\ResultatDicom',
+                    'orthanc_url_6' => 'App\\Entity\\ResultatDicom',
+                ],
+            ],
+        ],
+    ],
+    $o[0],
+    []
+); } }];

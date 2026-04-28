@@ -1,0 +1,61 @@
+.sidebar {
+  height: 100%;
+  background: linear-gradient(180deg, #17384c 0%, #1f5569 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  padding: 14px 10px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  border-radius: 8px;
+  color: #d9edf9;
+  text-decoration: none;
+  padding: 0 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.menu-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateX(1px);
+}
+
+.menu-item.actif {
+  color: #ffffff;
+  background: rgba(4, 23, 34, 0.32);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 900px) {
+  .label {
+    display: none;
+  }
+
+  .menu-item {
+    justify-content: center;
+    padding: 0;
+  }
+}

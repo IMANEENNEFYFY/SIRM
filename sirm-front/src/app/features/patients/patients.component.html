@@ -1,0 +1,123 @@
+<section class="patients-page">
+  <div class="section-heading">
+    <div>
+      <h1>Registre des patients</h1>
+      <p>Recherche rapide, creation et mise a jour des identites patient.</p>
+    </div>
+    <div class="search-box">
+      <input [(ngModel)]="recherche" placeholder="Nom, CIN ou identifiant patient" />
+      <button class="btn btn-primary" (click)="charger()">Rechercher</button>
+    </div>
+  </div>
+
+  <p class="error" *ngIf="erreur">{{ erreur }}</p>
+
+  <div class="grid-top">
+    <article class="card form-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Nouveau patient</h2>
+          <p>Creer une fiche avec les donnees administratives essentielles.</p>
+        </div>
+        <span class="pill pill-neutral">Admission</span>
+      </div>
+
+      <div class="form-grid">
+        <label><span>Nom</span><input [(ngModel)]="creation.nom" placeholder="Nom *" /></label>
+        <label><span>Prenom</span><input [(ngModel)]="creation.prenom" placeholder="Prenom *" /></label>
+        <label><span>CIN</span><input [(ngModel)]="creation.cin" placeholder="CIN *" /></label>
+        <label><span>Date de naissance</span><input [(ngModel)]="creation.dateNaissance" type="date" /></label>
+        <label>
+          <span>Sexe</span>
+          <select [(ngModel)]="creation.sexe">
+            <option value="M">Masculin</option>
+            <option value="F">Feminin</option>
+          </select>
+        </label>
+        <label><span>Telephone</span><input [(ngModel)]="creation.telephone" placeholder="Telephone" /></label>
+        <label class="full"><span>Adresse</span><input [(ngModel)]="creation.adresse" placeholder="Adresse" /></label>
+      </div>
+
+      <button class="btn btn-primary" (click)="creerPatient()">Creer le patient</button>
+    </article>
+
+    <article class="card side-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Vue rapide</h2>
+          <p>Le registre affiche les patients actifs retournes par l'API.</p>
+        </div>
+        <span class="pill pill-info">{{ patients.length }} fiches</span>
+      </div>
+
+      <div class="summary-list">
+        <div class="summary-item">
+          <strong>Recherche ciblee</strong>
+          <small>Nom, CIN et identifiant patient pour acceder vite au dossier.</small>
+        </div>
+        <div class="summary-item">
+          <strong>Edition simple</strong>
+          <small>Mise a jour du telephone et de l'adresse sans quitter l'ecran.</small>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <article class="card form-card" *ngIf="patientEnEdition">
+    <div class="bloc-titre">
+      <div>
+        <h2>Modifier {{ patientEnEdition.prenom }} {{ patientEnEdition.nom }}</h2>
+        <p>Mettre a jour les informations administratives disponibles.</p>
+      </div>
+      <span class="pill pill-warning">Edition</span>
+    </div>
+
+    <div class="form-grid">
+      <label><span>Nom</span><input [(ngModel)]="edition.nom" placeholder="Nom" /></label>
+      <label><span>Prenom</span><input [(ngModel)]="edition.prenom" placeholder="Prenom" /></label>
+      <label><span>Telephone</span><input [(ngModel)]="edition.telephone" placeholder="Telephone" /></label>
+      <label class="full"><span>Adresse</span><input [(ngModel)]="edition.adresse" placeholder="Adresse" /></label>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" (click)="sauvegarderEdition()">Sauvegarder</button>
+      <button class="btn btn-secondary" (click)="annulerEdition()">Annuler</button>
+    </div>
+  </article>
+
+  <article class="card list-card">
+    <div class="bloc-titre">
+      <div>
+        <h2>Liste des patients</h2>
+        <p>Vue administrative des identites disponibles pour la planification.</p>
+      </div>
+      <span class="pill pill-neutral">Registre</span>
+    </div>
+
+    <div class="table-scroll">
+      <div class="table-head">
+        <span>ID patient</span>
+        <span>Nom complet</span>
+        <span>CIN</span>
+        <span>Naissance</span>
+        <span>Sexe</span>
+        <span>Actions</span>
+      </div>
+
+      <div class="table-row" *ngFor="let patient of patients">
+        <span>{{ patient.patientId }}</span>
+        <span class="patient-name">
+          <strong>{{ patient.prenom }} {{ patient.nom }}</strong>
+        </span>
+        <span>{{ patient.cin || '-' }}</span>
+        <span>{{ patient.dateNaissance || '-' }}</span>
+        <span>{{ patient.sexe || '-' }}</span>
+        <span>
+          <button class="btn btn-secondary" (click)="activerEdition(patient)">Modifier</button>
+        </span>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!chargement && patients.length === 0">Aucun patient trouve.</p>
+  </article>
+</section>

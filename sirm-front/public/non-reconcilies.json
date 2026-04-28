@@ -1,0 +1,35 @@
+[
+  {
+    "id": 2,
+    "orthancInstanceId": "954524e9-2e632c5b-019a5f9a-0058afee-5109a679",
+    "patientIdDicom": "PAT002",
+    "patientNomDicom": "MARTIN^Marie",
+    "studyInstanceUid": "1.2.826.0.1.3680043.8.498.61201236506239484777568476608285723190",
+    "modality": "MR",
+    "statut": "EN_ATTENTE",
+    "receivedAt": "2026-04-27T10:44:09+00:00",
+    "candidats": []
+  },
+  {
+    "id": 3,
+    "orthancInstanceId": "23c0547f-752a9a4d-ef2ab585-1a91a34d-25380b2a",
+    "patientIdDicom": "PAT003",
+    "patientNomDicom": "DUPONT^Jean",
+    "studyInstanceUid": "1.2.826.0.1.3680043.8.498.93327815663830313270953124706513875920",
+    "modality": "CT",
+    "statut": "EN_ATTENTE",
+    "receivedAt": "2026-04-27T10:44:09+00:00",
+    "candidats": []
+  },
+  {
+    "id": 1,
+    "orthancInstanceId": "ed68faa3-6ffcf85e-df03e0a9-28be0718-8a00cc3c",
+    "patientIdDicom": "PAT001",
+    "patientNomDicom": "BENALI^Ahmed",
+    "studyInstanceUid": "1.2.826.0.1.3680043.8.498.73649675271473863864480435297662181378",
+    "modality": "MR",
+    "statut": "EN_ATTENTE",
+    "receivedAt": "2026-04-27T10:44:08+00:00",
+    "candidats": []
+  }
+]
