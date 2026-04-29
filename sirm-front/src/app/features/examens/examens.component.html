@@ -23,7 +23,7 @@
         <label>
           <span>Patient</span>
           <select [(ngModel)]="creation.patientId">
-            <option *ngFor="let patient of patients" [ngValue]="patient.id">
+            <option *ngFor="let patient of patients; trackBy: trackByPatientId" [ngValue]="patient.id">
               {{ patient.prenom }} {{ patient.nom }}
             </option>
           </select>
@@ -32,7 +32,7 @@
         <label>
           <span>Machine</span>
           <select [(ngModel)]="creation.machineId">
-            <option *ngFor="let machine of machines" [ngValue]="machine.id" [disabled]="!isMachineDisponible(machine)">
+            <option *ngFor="let machine of machines; trackBy: trackByMachineId" [ngValue]="machine.id" [disabled]="!isMachineDisponible(machine)">
               {{ machine.nom }} - {{ machine.modalite }} - {{ getMachineStatusLabel(machine.statut) }}
             </option>
           </select>
@@ -96,7 +96,7 @@
       <label>
         <span>Patient</span>
         <select [(ngModel)]="edition.patientId">
-          <option *ngFor="let patient of patients" [ngValue]="patient.id">
+          <option *ngFor="let patient of patients; trackBy: trackByPatientId" [ngValue]="patient.id">
             {{ patient.prenom }} {{ patient.nom }}
           </option>
         </select>
@@ -105,7 +105,7 @@
       <label>
         <span>Machine</span>
         <select [(ngModel)]="edition.machineId">
-          <option *ngFor="let machine of machines" [ngValue]="machine.id">
+          <option *ngFor="let machine of machines; trackBy: trackByMachineId" [ngValue]="machine.id">
             {{ machine.nom }} - {{ machine.modalite }}
           </option>
         </select>
@@ -153,7 +153,7 @@
         <span>Actions</span>
       </div>
 
-      <div class="table-row" *ngFor="let examen of examens">
+      <div class="table-row" *ngFor="let examen of examens; trackBy: trackByExamenId">
         <span class="accession-cell">
           <strong>{{ examen.accessionNumber }}</strong>
           <small>{{ examen.machine.modalite }}</small>

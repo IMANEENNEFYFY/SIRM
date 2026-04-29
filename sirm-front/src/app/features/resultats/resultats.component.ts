@@ -34,12 +34,13 @@ export class ResultatsComponent implements OnInit {
     this.erreur = '';
 
     forkJoin({
-      examens: this.api.getExamens(),
+      resultats: this.api.getExamens({ view: 'resultats', limit: 50 }),
+      examensSelection: this.api.getExamens({ view: 'reconciliation-selection', limit: 100 }),
       nonReconcilies: this.api.getNonReconcilies()
     }).subscribe({
-      next: ({ examens, nonReconcilies }) => {
-        this.resultats = examens.filter((examen) => examen.statut === 'RECU' || !!examen.resultatDicom);
-        this.examensSelection = examens.filter((examen) => this.peutEtreSelectionne(examen));
+      next: ({ resultats, examensSelection, nonReconcilies }) => {
+        this.resultats = resultats;
+        this.examensSelection = examensSelection;
         this.nonReconcilies = nonReconcilies;
         this.selectedExamens = {};
         this.validationEnCours = {};
@@ -56,6 +57,14 @@ export class ResultatsComponent implements OnInit {
         this.erreur = 'Impossible de charger les resultats DICOM.';
       }
     });
+  }
+
+  trackByExamenId(_index: number, examen: Examen): number {
+    return examen.id;
+  }
+
+  trackByNonReconcilieId(_index: number, item: DicomNonReconcilie): number {
+    return item.id;
   }
 
   valider(item: DicomNonReconcilie): void {

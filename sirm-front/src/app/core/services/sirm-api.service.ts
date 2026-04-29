@@ -17,6 +17,13 @@ import {
   StatutExamen
 } from '../models/sirm.models';
 
+export interface ExamenListOptions {
+  statut?: StatutExamen;
+  page?: number;
+  limit?: number;
+  view?: 'resultats' | 'reconciliation-selection';
+}
+
 @Injectable({ providedIn: 'root' })
 export class SirmApiService {
   private readonly baseUrl = '/api';
@@ -48,10 +55,20 @@ export class SirmApiService {
     return this.http.get<Machine[]>(`${this.baseUrl}/machines`);
   }
 
-  getExamens(statut?: StatutExamen): Observable<Examen[]> {
+  getExamens(options?: StatutExamen | ExamenListOptions): Observable<Examen[]> {
+    const filters: ExamenListOptions = typeof options === 'string' ? { statut: options } : (options ?? {});
     let params = new HttpParams();
-    if (statut) {
-      params = params.set('statut', statut);
+    if (filters.statut) {
+      params = params.set('statut', filters.statut);
+    }
+    if (filters.page) {
+      params = params.set('page', String(filters.page));
+    }
+    if (filters.limit) {
+      params = params.set('limit', String(filters.limit));
+    }
+    if (filters.view) {
+      params = params.set('view', filters.view);
     }
 
     return this.http.get<Examen[]>(`${this.baseUrl}/examens`, { params });

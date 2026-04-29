@@ -78,13 +78,25 @@ export class ExamensComponent implements OnInit {
 
   charger(): void {
     this.erreur = '';
-    this.api.getExamens().subscribe({
+    this.api.getExamens({ limit: 50 }).subscribe({
       next: (value) => (this.examens = value),
       error: () => {
         this.examens = [];
         this.erreur = 'Impossible de charger les examens.';
       }
     });
+  }
+
+  trackByExamenId(_index: number, examen: Examen): number {
+    return examen.id;
+  }
+
+  trackByPatientId(_index: number, patient: Patient): number {
+    return patient.id;
+  }
+
+  trackByMachineId(_index: number, machine: Machine): number {
+    return machine.id;
   }
 
   creerExamen(): void {

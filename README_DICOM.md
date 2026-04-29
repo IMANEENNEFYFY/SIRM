@@ -7,7 +7,7 @@ Système de gestion d'examens radiologiques intégrant Orthanc pour la communica
 - **Backend**: Symfony 7 (PHP)
 - **Frontend**: Angular 18 (TypeScript)
 - **DICOM Server**: Orthanc
-- **Base de données**: PostgreSQL/MySQL
+- **Base de données**: MySQL 8
 
 ## Fonctionnalités DICOM
 

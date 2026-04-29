@@ -111,7 +111,9 @@ class ExamenRepository extends ServiceEntityRepository
     public function findByPatientIdentifier(string $patientIdentifier): array
     {
         return $this->createQueryBuilder('e')
+            ->select('e', 'p', 'm')
             ->innerJoin('e.patient', 'p')
+            ->leftJoin('e.machine', 'm')
             ->where('p.patientId = :identifier')
             ->andWhere('e.statut = :statut')
             ->setParameter('identifier', $patientIdentifier)
@@ -123,7 +125,9 @@ class ExamenRepository extends ServiceEntityRepository
     public function findByPatientNomPrenomEnCours(string $nom, ?string $prenom = null): array
     {
         $qb = $this->createQueryBuilder('e')
+            ->select('e', 'p', 'm')
             ->innerJoin('e.patient', 'p')
+            ->leftJoin('e.machine', 'm')
             ->where('LOWER(p.nom) = LOWER(:nom)')
             ->andWhere('e.statut = :statut')
             ->setParameter('nom', $nom)
@@ -150,5 +154,79 @@ class ExamenRepository extends ServiceEntityRepository
             ->setFirstResult($offset)
             ->getQuery()
             ->getResult();
+    }
+
+    public function findOneByStudyInstanceUidWithRelations(string $studyInstanceUid): ?Examen
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e', 'p', 'm')
+            ->leftJoin('e.patient', 'p')
+            ->leftJoin('e.machine', 'm')
+            ->where('e.studyInstanceUid = :studyInstanceUid')
+            ->setParameter('studyInstanceUid', $studyInstanceUid)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findWithDicomResults(int $page = 1, int $limit = 20): array
+    {
+        $offset = $this->computeOffset($page, $limit);
+
+        return $this->createQueryBuilder('e')
+            ->select('e', 'p', 'm')
+            ->leftJoin('e.patient', 'p')
+            ->leftJoin('e.machine', 'm')
+            ->leftJoin('e.resultatsDicom', 'r')
+            ->where('e.statut = :recu OR r.id IS NOT NULL')
+            ->setParameter('recu', StatutExamen::RECU)
+            ->orderBy('e.date', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findForReconciliationSelection(int $page = 1, int $limit = 100): array
+    {
+        $offset = $this->computeOffset($page, $limit);
+
+        return $this->createQueryBuilder('e')
+            ->select('e', 'p', 'm')
+            ->leftJoin('e.patient', 'p')
+            ->leftJoin('e.machine', 'm')
+            ->leftJoin('e.resultatsDicom', 'r')
+            ->where('e.statut NOT IN (:excludedStatuts)')
+            ->andWhere('r.id IS NULL')
+            ->setParameter('excludedStatuts', [StatutExamen::RECU, StatutExamen::ANNULE])
+            ->orderBy('e.date', 'DESC')
+            ->setMaxResults($limit)
+            ->setFirstResult($offset)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function countGroupedByStatut(): array
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('e.statut AS statut, COUNT(e.id) AS total')
+            ->groupBy('e.statut')
+            ->getQuery()
+            ->getScalarResult();
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $statut = $row['statut'];
+            if ($statut instanceof StatutExamen) {
+                $statut = $statut->value;
+            }
+
+            $counts[(string) $statut] = (int) $row['total'];
+        }
+
+        return $counts;
     }
 }

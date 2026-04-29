@@ -46,7 +46,7 @@
       <span>Statut</span>
     </div>
 
-    <div class="table-row" *ngFor="let examen of derniersExamens">
+    <div class="table-row" *ngFor="let examen of derniersExamens; trackBy: trackByExamenId">
       <span class="patient-cell">
         <strong>{{ examen.patient.prenom }} {{ examen.patient.nom }}</strong>
         <small>{{ examen.patient.patientId }}</small>

@@ -55,7 +55,9 @@ class ExamenController extends AbstractController
     {
         $patientId = $request->query->get('patientId');
         $statut = $request->query->get('statut');
+        $view = $request->query->get('view');
         $page = max(1, (int) $request->query->get('page', 1));
+        $limit = max(1, min(100, (int) $request->query->get('limit', 20)));
 
         try {
             if (strtoupper((string) $statut) === 'EN_ATTENTE') {
@@ -91,17 +93,21 @@ class ExamenController extends AbstractController
                 }, $items));
             }
 
-            if ($patientId) {
-                $examens = $this->examenRepository->findByPatient((int) $patientId, $page);
+            if ($view === 'resultats') {
+                $examens = $this->examenRepository->findWithDicomResults($page, $limit);
+            } elseif ($view === 'reconciliation-selection') {
+                $examens = $this->examenRepository->findForReconciliationSelection($page, $limit);
+            } elseif ($patientId) {
+                $examens = $this->examenRepository->findByPatient((int) $patientId, $page, $limit);
             } elseif ($statut) {
                 $normalizedStatut = strtoupper($statut) === 'TERMINE' ? 'RECU' : strtoupper($statut);
                 $statutEnum = StatutExamen::tryFrom($normalizedStatut);
                 if (!$statutEnum) {
                     return $this->json(['error' => 'Statut invalide'], 422);
                 }
-                $examens = $this->examenRepository->findByStatut($statutEnum, $page);
+                $examens = $this->examenRepository->findByStatut($statutEnum, $page, $limit);
             } else {
-                $examens = $this->examenRepository->findAllWithRelations($page);
+                $examens = $this->examenRepository->findAllWithRelations($page, $limit);
             }
 
             return $this->json($this->examenService->toArrayMany($examens));
@@ -312,10 +318,11 @@ class ExamenController extends AbstractController
     #[Route('/stats/resume', name: 'examen_stats', methods: ['GET'])]
     public function stats(): JsonResponse
     {
-        $planifies = $this->examenRepository->countByStatut(StatutExamen::PLANIFIE);
-        $enCours = $this->examenRepository->countByStatut(StatutExamen::EN_COURS);
-        $recus = $this->examenRepository->countByStatut(StatutExamen::RECU);
-        $annules = $this->examenRepository->countByStatut(StatutExamen::ANNULE);
+        $counts = $this->examenRepository->countGroupedByStatut();
+        $planifies = $counts[StatutExamen::PLANIFIE->value] ?? 0;
+        $enCours = $counts[StatutExamen::EN_COURS->value] ?? 0;
+        $recus = $counts[StatutExamen::RECU->value] ?? 0;
+        $annules = $counts[StatutExamen::ANNULE->value] ?? 0;
 
         return $this->json([
             'planifies' => $planifies,

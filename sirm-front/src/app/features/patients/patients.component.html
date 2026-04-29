@@ -104,7 +104,7 @@
         <span>Actions</span>
       </div>
 
-      <div class="table-row" *ngFor="let patient of patients">
+      <div class="table-row" *ngFor="let patient of patients; trackBy: trackByPatientId">
         <span>{{ patient.patientId }}</span>
         <span class="patient-name">
           <strong>{{ patient.prenom }} {{ patient.nom }}</strong>

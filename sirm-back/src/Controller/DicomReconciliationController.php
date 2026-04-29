@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\DicomNonReconcilie;
-use App\Entity\Examen;
 use App\Enum\StatutExamen;
 use App\Repository\DicomNonReconcilieRepository;
 use App\Repository\ExamenRepository;
@@ -101,26 +100,27 @@ class DicomReconciliationController extends AbstractController
     {
         $items = $this->dicomNonReconcilieRepository->findEnAttente();
 
-        return array_map(fn (DicomNonReconcilie $item) => [
-            'id' => $item->getId(),
-            'orthancInstanceId' => $item->getOrthancInstanceId(),
-            'patientIdDicom' => $item->getPatientIdDicom(),
-            'patientNomDicom' => $item->getPatientNomDicom(),
-            'studyInstanceUid' => $item->getStudyInstanceUid(),
-            'modality' => $item->getModality(),
-            'statut' => $item->getStatut(),
-            'receivedAt' => $item->getReceivedAt()->format(\DateTimeInterface::ATOM),
-            'candidats' => array_map(
-                fn (Examen $examen) => $this->examenService->toArray($examen),
-                $this->resolveCandidates($item)
-            ),
-        ], $items);
+        return array_map(function (DicomNonReconcilie $item) {
+            $candidats = $this->resolveCandidates($item);
+
+            return [
+                'id' => $item->getId(),
+                'orthancInstanceId' => $item->getOrthancInstanceId(),
+                'patientIdDicom' => $item->getPatientIdDicom(),
+                'patientNomDicom' => $item->getPatientNomDicom(),
+                'studyInstanceUid' => $item->getStudyInstanceUid(),
+                'modality' => $item->getModality(),
+                'statut' => $item->getStatut(),
+                'receivedAt' => $item->getReceivedAt()->format(\DateTimeInterface::ATOM),
+                'candidats' => $this->examenService->toArrayMany($candidats),
+            ];
+        }, $items);
     }
 
     private function resolveCandidates(DicomNonReconcilie $item): array
     {
         if ($item->getStudyInstanceUid()) {
-            $examen = $this->examenRepository->findOneBy(['studyInstanceUid' => $item->getStudyInstanceUid()]);
+            $examen = $this->examenRepository->findOneByStudyInstanceUidWithRelations($item->getStudyInstanceUid());
             if ($examen) {
                 return [$examen];
             }

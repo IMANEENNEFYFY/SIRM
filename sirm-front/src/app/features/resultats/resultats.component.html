@@ -28,7 +28,7 @@
         <span>Action</span>
       </div>
 
-      <div class="table-row orphan-row" *ngFor="let item of nonReconcilies">
+      <div class="table-row orphan-row" *ngFor="let item of nonReconcilies; trackBy: trackByNonReconcilieId">
         <span>{{ item.receivedAt | date: 'dd/MM/yyyy HH:mm' }}</span>
         <span class="patient-cell">
           <strong>{{ item.patientNomDicom || 'Nom inconnu' }}</strong>
@@ -42,7 +42,7 @@
         <span>
           <select [(ngModel)]="selectedExamens[item.id]" [disabled]="!hasExamensPourItem(item)">
             <option [ngValue]="null">Choisir un examen</option>
-            <option *ngFor="let candidat of examensPourItem(item)" [ngValue]="candidat.id">
+            <option *ngFor="let candidat of examensPourItem(item); trackBy: trackByExamenId" [ngValue]="candidat.id">
               {{ candidat.accessionNumber }} - {{ candidat.patient.prenom }} {{ candidat.patient.nom }} - {{ candidat.type }}
             </option>
           </select>
@@ -79,7 +79,7 @@
         <span>Action</span>
       </div>
 
-      <div class="table-row" *ngFor="let item of resultats">
+      <div class="table-row" *ngFor="let item of resultats; trackBy: trackByExamenId">
         <span>{{ item.date | date: 'dd/MM/yyyy' }}</span>
         <span class="patient-cell">
           <strong>{{ item.patient.prenom }} {{ item.patient.nom }}</strong>

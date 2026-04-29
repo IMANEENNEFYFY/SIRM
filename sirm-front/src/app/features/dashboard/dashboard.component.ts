@@ -21,9 +21,13 @@ export class DashboardComponent implements OnInit {
       next: (value) => (this.stats = value)
     });
 
-    this.api.getExamens().subscribe({
-      next: (value) => (this.derniersExamens = value.slice(0, 6))
+    this.api.getExamens({ limit: 6 }).subscribe({
+      next: (value) => (this.derniersExamens = value)
     });
+  }
+
+  trackByExamenId(_index: number, examen: Examen): number {
+    return examen.id;
   }
 
   getStatutLabel(statut: Examen['statut']): string {

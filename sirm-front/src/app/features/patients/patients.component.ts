@@ -113,4 +113,8 @@ export class PatientsComponent implements OnInit {
       }
     });
   }
+
+  trackByPatientId(_index: number, patient: Patient): number {
+    return patient.id;
+  }
 }
