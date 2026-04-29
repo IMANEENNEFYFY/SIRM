@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use App\Enum\StatutExamen;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: \App\Repository\ExamenRepository::class)]
@@ -53,12 +55,14 @@ public function setMedecin(?Utilisateur $u): self
     return $this;
 }
 
-    #[ORM\OneToOne(mappedBy: 'examen', targetEntity: ResultatDicom::class, cascade: ['persist'])]
-    private ?ResultatDicom $resultatDicom = null;
+    #[ORM\OneToMany(mappedBy: 'examen', targetEntity: ResultatDicom::class, cascade: ['persist'])]
+    #[ORM\OrderBy(['receivedAt' => 'DESC'])]
+    private Collection $resultatsDicom;
 
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->resultatsDicom = new ArrayCollection();
     }
 
     public function updateStatut(StatutExamen $nouveau): self
@@ -98,5 +102,9 @@ public function setStudyInstanceUid(?string $uid): self { $this->studyInstanceUi
     public function getMachine(): Machine { return $this->machine; }
     public function setMachine(Machine $m): self { $this->machine = $m; return $this; }
 
-    public function getResultatDicom(): ?ResultatDicom { return $this->resultatDicom; }
+    /**
+     * @return Collection<int, ResultatDicom>
+     */
+    public function getResultatsDicom(): Collection { return $this->resultatsDicom; }
+
 }

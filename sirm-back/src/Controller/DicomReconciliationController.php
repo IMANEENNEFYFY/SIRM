@@ -70,7 +70,7 @@ class DicomReconciliationController extends AbstractController
             return $this->json(['error' => 'Impossible de rattacher un resultat a un examen annule'], 422);
         }
 
-        if ($examen->getStatut() === StatutExamen::RECU || $examen->getResultatDicom() !== null) {
+        if ($examen->getStatut() === StatutExamen::RECU || !$examen->getResultatsDicom()->isEmpty()) {
             return $this->json(['error' => 'Cet examen a deja un resultat rattache'], 422);
         }
 

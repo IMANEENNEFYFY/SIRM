@@ -15,7 +15,7 @@ class ResultatDicom
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Examen::class)]
+    #[ORM\ManyToOne(targetEntity: Examen::class, inversedBy: 'resultatsDicom')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Examen $examen = null;
 
