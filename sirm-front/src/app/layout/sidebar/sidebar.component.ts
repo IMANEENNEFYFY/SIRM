@@ -14,6 +14,7 @@ export class SidebarComponent {
     { label: 'Tableau de bord', route: '/tableau-de-bord', icon: 'DB' },
     { label: 'Patients', route: '/patients', icon: 'PT' },
     { label: 'Examens', route: '/examens', icon: 'EX' },
+    { label: 'Machines', route: '/machines', icon: 'MC' },
     { label: 'Resultats', route: '/resultats', icon: 'RS' },
     { label: 'Viewer', route: '/viewer', icon: 'VW' }
   ];

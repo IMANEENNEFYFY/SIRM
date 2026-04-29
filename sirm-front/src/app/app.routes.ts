@@ -1,29 +1,48 @@
 import { Routes } from '@angular/router';
-import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
-import { DashboardComponent } from './features/dashboard/dashboard.component';
-import { PatientsComponent } from './features/patients/patients.component';
-import { ExamensComponent } from './features/examens/examens.component';
-import { ResultatsComponent } from './features/resultats/resultats.component';
-import { LoginComponent } from './features/login/login.component';
-import { ViewerComponent } from './features/viewer/viewer.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
 	{
 		path: 'login',
-		component: LoginComponent
+		loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent)
 	},
 	{
 		path: '',
-		component: MainLayoutComponent,
+		loadComponent: () =>
+			import('./layout/main-layout/main-layout.component').then((m) => m.MainLayoutComponent),
 		canActivate: [authGuard],
 		children: [
 			{ path: '', redirectTo: 'tableau-de-bord', pathMatch: 'full' },
-			{ path: 'tableau-de-bord', component: DashboardComponent },
-			{ path: 'patients', component: PatientsComponent },
-			{ path: 'examens', component: ExamensComponent },
-			{ path: 'resultats', component: ResultatsComponent },
-			{ path: 'viewer', component: ViewerComponent }
+			{
+				path: 'tableau-de-bord',
+				loadComponent: () =>
+					import('./features/dashboard/dashboard.component').then((m) => m.DashboardComponent)
+			},
+			{
+				path: 'patients',
+				loadComponent: () =>
+					import('./features/patients/patients.component').then((m) => m.PatientsComponent)
+			},
+			{
+				path: 'examens',
+				loadComponent: () =>
+					import('./features/examens/examens.component').then((m) => m.ExamensComponent)
+			},
+			{
+				path: 'machines',
+				loadComponent: () =>
+					import('./features/machines/machines.component').then((m) => m.MachinesComponent)
+			},
+			{
+				path: 'resultats',
+				loadComponent: () =>
+					import('./features/resultats/resultats.component').then((m) => m.ResultatsComponent)
+			},
+			{
+				path: 'viewer',
+				loadComponent: () =>
+					import('./features/viewer/viewer.component').then((m) => m.ViewerComponent)
+			}
 		]
 	},
 	{ path: '**', redirectTo: 'login' }

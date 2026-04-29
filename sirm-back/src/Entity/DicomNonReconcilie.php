@@ -3,8 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\DicomNonReconcilieRepository;
-use Doctrine\ORM\Mapping as ORM;
 use DateTimeImmutable;
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DicomNonReconcilieRepository::class)]
 #[ORM\Table(name: 'dicom_non_reconcilie')]
@@ -47,12 +47,6 @@ class DicomNonReconcilie
     {
         $this->receivedAt = new DateTimeImmutable();
     }
-    // ...
-#[ORM\ManyToOne(targetEntity: Examen::class)]
-#[ORM\JoinColumn(nullable: true)]
-
-
-
 
     public function getId(): ?int { return $this->id; }
 

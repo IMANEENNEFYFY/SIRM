@@ -1,0 +1,119 @@
+<section class="machines-page">
+  <div class="section-heading">
+    <div>
+      <h1>Gestion des machines</h1>
+      <p>Suivi des modalites et mise a jour des statuts.</p>
+    </div>
+    <button class="btn btn-primary" (click)="charger()">Actualiser</button>
+  </div>
+
+  <p class="error" *ngIf="erreur">{{ erreur }}</p>
+
+  <div class="grid-top">
+    <article class="card info-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Etat du parc</h2>
+          <p>Vue rapide des machines selon leur statut.</p>
+        </div>
+        <span class="pill pill-info">{{ machines.length }} machines</span>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-item">
+          <span class="pill pill-success">Disponible</span>
+          <strong>{{ countByStatut('DISPONIBLE') }}</strong>
+        </div>
+        <div class="summary-item">
+          <span class="pill pill-warning">En cours</span>
+          <strong>{{ countByStatut('EN_COURS') }}</strong>
+        </div>
+        <div class="summary-item">
+          <span class="pill pill-danger">Fait</span>
+          <strong>{{ countByStatut('FAIT') }}</strong>
+        </div>
+        <div class="summary-item">
+          <span class="pill pill-info">Maintenance</span>
+          <strong>{{ countByStatut('EN_MAINTENANCE') }}</strong>
+        </div>
+      </div>
+    </article>
+
+    <article class="card tips-card">
+      <div class="bloc-titre">
+        <div>
+          <h2>Actions rapides</h2>
+          <p>Changer un statut pour liberer ou immobiliser une machine.</p>
+        </div>
+        <span class="pill pill-neutral">Pilotage</span>
+      </div>
+
+      <div class="tips-list">
+        <div>
+          <strong>Disponible</strong>
+          <small>Machine prete a etre affectee a un examen.</small>
+        </div>
+        <div>
+          <strong>En cours</strong>
+          <small>Examen en acquisition ou worklist active.</small>
+        </div>
+        <div>
+          <strong>Maintenance</strong>
+          <small>Indisponible pour planification clinique.</small>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <article class="card list-card">
+    <div class="bloc-titre">
+      <div>
+        <h2>Liste des machines</h2>
+        <p>Mettre a jour les statuts et suivre les modalites.</p>
+      </div>
+      <span class="pill pill-neutral">Parc</span>
+    </div>
+
+    <div class="table-scroll">
+      <div class="table-head">
+        <span>Machine</span>
+        <span>Modalite</span>
+        <span>AE Title</span>
+        <span>Statut actuel</span>
+        <span>Disponibilite</span>
+        <span>Actions</span>
+      </div>
+
+      <div class="table-row" *ngFor="let machine of machines; trackBy: trackByMachineId">
+        <span class="machine-name">
+          <strong>{{ machine.nom }}</strong>
+          <small>{{ machine.description || '-' }}</small>
+        </span>
+        <span>{{ machine.modalite }}</span>
+        <span>{{ machine.aeTitle }}</span>
+        <span>
+          <span class="pill" [ngClass]="getStatutBadgeClass(machine.statut)">
+            {{ getStatutLabel(machine.statut) }}
+          </span>
+        </span>
+        <span>{{ machine.isDisponible ? 'Disponible' : 'Non disponible' }}</span>
+        <span class="actions">
+          <select [(ngModel)]="statutSelection[machine.id]">
+            <option *ngFor="let option of statutOptions" [ngValue]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+          <button
+            class="btn btn-secondary"
+            (click)="sauvegarderStatut(machine)"
+            [disabled]="statutSelection[machine.id] === machine.statut"
+          >
+            Mettre a jour
+          </button>
+        </span>
+      </div>
+    </div>
+
+    <p class="empty" *ngIf="!chargement && machines.length === 0">Aucune machine disponible.</p>
+  </article>
+</section>

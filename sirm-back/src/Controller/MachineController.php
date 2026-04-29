@@ -1,43 +1,24 @@
 <?php
+
 namespace App\Controller;
+
 use App\Entity\Machine;
+use App\Enum\StatutMachine;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/api/machines')]
 class MachineController extends AbstractController
 {
     #[Route('', methods: ['GET'])]
-    public function getAll(EntityManagerInterface $em): JsonResponse       
+    public function getAll(EntityManagerInterface $em): JsonResponse
     {
         $machines = $em->getRepository(Machine::class)->findAll();
 
-        $data = array_map(function ($m) {
-            $couleur = match($m->getStatut()) {
-                \App\Enum\StatutMachine::DISPONIBLE => 'success',     // vert
-                \App\Enum\StatutMachine::EN_COURS => 'warning',       // orange
-                \App\Enum\StatutMachine::FAIT => 'danger',            // rouge
-                \App\Enum\StatutMachine::EN_MAINTENANCE => 'info',
-                \App\Enum\StatutMachine::HORS_SERVICE => 'secondary',
-            };
-
-            return [
-                'id' => $m->getId(),
-                'nom' => $m->getNom(),
-                'modalite' => $m->getModalite(),
-                'aeTitle' => $m->getAeTitle(),
-                'statut' => $m->getStatut()->value,
-                'couleur' => $couleur,
-                'isDisponible' => $m->isDisponible(),
-                'dateDebut' => $m->getDateDebut()?->format('Y-m-d H:i:s'),
-                'dateFin' => $m->getDateFin()?->format('Y-m-d H:i:s'),
-                'description' => $m->getDescription(),
-            ];
-        }, $machines);
-
-        return $this->json($data);
+        return $this->json(array_map(fn (Machine $machine) => $this->serializeMachine($machine), $machines));
     }
 
     #[Route('/{id}', methods: ['GET'])]
@@ -48,34 +29,15 @@ class MachineController extends AbstractController
             return $this->json(['error' => 'Machine not found'], 404);
         }
 
-        $couleur = match($machine->getStatut()) {
-            \App\Enum\StatutMachine::DISPONIBLE => 'success',
-            \App\Enum\StatutMachine::EN_COURS => 'warning',
-            \App\Enum\StatutMachine::FAIT => 'danger',
-            \App\Enum\StatutMachine::EN_MAINTENANCE => 'info',
-            \App\Enum\StatutMachine::HORS_SERVICE => 'secondary',
-        };
-
-        return $this->json([
-            'id' => $machine->getId(),
-            'nom' => $machine->getNom(),
-            'modalite' => $machine->getModalite(),
-            'aeTitle' => $machine->getAeTitle(),
-            'statut' => $machine->getStatut()->value,
-            'couleur' => $couleur,
-            'isDisponible' => $machine->isDisponible(),
-            'dateDebut' => $machine->getDateDebut()?->format('Y-m-d H:i:s'),
-            'dateFin' => $machine->getDateFin()?->format('Y-m-d H:i:s'),
-            'description' => $machine->getDescription(),
-        ]);
+        return $this->json($this->serializeMachine($machine));
     }
 
     #[Route('/{id}/statut', methods: ['PATCH'])]
-    public function updateStatut(int $id, EntityManagerInterface $em): JsonResponse
+    public function updateStatut(int $id, Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = json_decode($request->getContent(), true) ?? [];
         $machine = $em->getRepository(Machine::class)->find($id);
-        
+
         if (!$machine) {
             return $this->json(['error' => 'Machine not found'], 404);
         }
@@ -85,9 +47,9 @@ class MachineController extends AbstractController
         }
 
         try {
-            $statut = \App\Enum\StatutMachine::from($data['statut']);
+            $statut = StatutMachine::from($data['statut']);
             $machine->setStatut($statut);
-            
+
             if (!empty($data['dateDebut'])) {
                 $machine->setDateDebut(new \DateTime($data['dateDebut']));
             }
@@ -103,10 +65,37 @@ class MachineController extends AbstractController
             return $this->json([
                 'id' => $machine->getId(),
                 'statut' => $machine->getStatut()->value,
-                'message' => 'Machine status updated'
+                'message' => 'Machine status updated',
             ]);
         } catch (\ValueError $e) {
             return $this->json(['error' => 'Invalid statut value'], 400);
         }
+    }
+
+    private function serializeMachine(Machine $machine): array
+    {
+        return [
+            'id' => $machine->getId(),
+            'nom' => $machine->getNom(),
+            'modalite' => $machine->getModalite(),
+            'aeTitle' => $machine->getAeTitle(),
+            'statut' => $machine->getStatut()->value,
+            'couleur' => $this->getStatutColor($machine->getStatut()),
+            'isDisponible' => $machine->isDisponible(),
+            'dateDebut' => $machine->getDateDebut()?->format('Y-m-d H:i:s'),
+            'dateFin' => $machine->getDateFin()?->format('Y-m-d H:i:s'),
+            'description' => $machine->getDescription(),
+        ];
+    }
+
+    private function getStatutColor(StatutMachine $statut): string
+    {
+        return match ($statut) {
+            StatutMachine::DISPONIBLE => 'success',
+            StatutMachine::EN_COURS => 'warning',
+            StatutMachine::FAIT => 'danger',
+            StatutMachine::EN_MAINTENANCE => 'info',
+            StatutMachine::HORS_SERVICE => 'secondary',
+        };
     }
 }

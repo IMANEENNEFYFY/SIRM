@@ -40,24 +40,17 @@ class Examen
     #[ORM\ManyToOne(targetEntity: Machine::class)]
     #[ORM\JoinColumn(nullable: false)]
     private Machine $machine;
-#[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-#[ORM\JoinColumn(nullable: true)]
-private ?Utilisateur $medecin = null;
 
-public function getMedecin(): ?Utilisateur
-{
-    return $this->medecin;
-}
-
-public function setMedecin(?Utilisateur $u): self
-{
-    $this->medecin = $u;
-    return $this;
-}
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Utilisateur $medecin = null;
 
     #[ORM\OneToMany(mappedBy: 'examen', targetEntity: ResultatDicom::class, cascade: ['persist'])]
     #[ORM\OrderBy(['receivedAt' => 'DESC'])]
     private Collection $resultatsDicom;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $studyInstanceUid = null;
 
     public function __construct()
     {
@@ -71,13 +64,7 @@ public function setMedecin(?Utilisateur $u): self
         $this->dateModifStatut = new \DateTime();
         return $this;
     }
-// ...
-#[ORM\Column(length: 255, nullable: true)]
-private ?string $studyInstanceUid = null;
 
-public function getStudyInstanceUid(): ?string { return $this->studyInstanceUid; }
-public function setStudyInstanceUid(?string $uid): self { $this->studyInstanceUid = $uid; return $this; }
-// ...
     public function getId(): int { return $this->id; }
 
     public function getAccessionNumber(): string
@@ -101,10 +88,13 @@ public function setStudyInstanceUid(?string $uid): self { $this->studyInstanceUi
     public function setPatient(Patient $p): self { $this->patient = $p; return $this; }
     public function getMachine(): Machine { return $this->machine; }
     public function setMachine(Machine $m): self { $this->machine = $m; return $this; }
+    public function getMedecin(): ?Utilisateur { return $this->medecin; }
+    public function setMedecin(?Utilisateur $u): self { $this->medecin = $u; return $this; }
+    public function getStudyInstanceUid(): ?string { return $this->studyInstanceUid; }
+    public function setStudyInstanceUid(?string $uid): self { $this->studyInstanceUid = $uid; return $this; }
 
     /**
      * @return Collection<int, ResultatDicom>
      */
     public function getResultatsDicom(): Collection { return $this->resultatsDicom; }
-
 }

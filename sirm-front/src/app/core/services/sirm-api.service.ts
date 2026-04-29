@@ -14,7 +14,8 @@ import {
   PatientCreatePayload,
   PatientUpdatePayload,
   ResumeStats,
-  StatutExamen
+  StatutExamen,
+  StatutMachine
 } from '../models/sirm.models';
 
 export interface ExamenListOptions {
@@ -53,6 +54,16 @@ export class SirmApiService {
 
   getMachines(): Observable<Machine[]> {
     return this.http.get<Machine[]>(`${this.baseUrl}/machines`);
+  }
+
+  updateMachineStatut(
+    id: number,
+    payload: { statut: StatutMachine; dateDebut?: string; dateFin?: string; description?: string }
+  ): Observable<{ id: number; statut: StatutMachine; message: string }> {
+    return this.http.patch<{ id: number; statut: StatutMachine; message: string }>(
+      `${this.baseUrl}/machines/${id}/statut`,
+      payload
+    );
   }
 
   getExamens(options?: StatutExamen | ExamenListOptions): Observable<Examen[]> {
